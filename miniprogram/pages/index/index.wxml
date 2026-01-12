@@ -1,0 +1,17 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <view class="logo-container">
+    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    <text class="app-name">票迹</text>
+    <text class="app-desc">记录你的精彩人生</text>
+  </view>
+  
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">{{loadingText}}</text>
+  </view>
+  
+  <view class="retry-container" wx:else>
+    <button class="retry-btn" bindtap="onRetry">重新加载</button>
+  </view>
+</view>
