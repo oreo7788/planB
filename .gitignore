@@ -1,0 +1,47 @@
+# ==================== 敏感配置文件 ====================
+server/config/config.yaml
+
+# ==================== 操作系统 ====================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ==================== IDE ====================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ==================== Go ====================
+server/*.exe
+server/*.exe~
+server/*.dll
+server/*.so
+server/*.dylib
+server/*.test
+server/*.out
+server/vendor/
+
+# ==================== Node.js / H5 ====================
+h5/node_modules/
+h5/dist/
+h5/.env
+h5/.env.local
+h5/.env.*.local
+h5/*.local
+
+# ==================== 小程序 ====================
+miniprogram/miniprogram_npm/
+miniprogram/node_modules/
+
+# ==================== 日志文件 ====================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==================== 临时文件 ====================
+*.tmp
+*.temp
+.cache/

@@ -47,6 +47,22 @@ type QiniuConfig struct {
 	SecretKey string `mapstructure:"secret_key"`
 	Bucket    string `mapstructure:"bucket"`
 	Domain    string `mapstructure:"domain"`
+	Region    string `mapstructure:"region"` // 区域：z0(华东), z1(华北), z2(华南), na0(北美), as0(东南亚)
+}
+
+// GetUploadURL 获取七牛云上传域名
+func (c *QiniuConfig) GetUploadURL() string {
+	regionMap := map[string]string{
+		"z0":  "https://upload.qiniup.com",      // 华东
+		"z1":  "https://up-z1.qiniup.com",       // 华北
+		"z2":  "https://up-z2.qiniup.com",       // 华南
+		"na0": "https://up-na0.qiniup.com",      // 北美
+		"as0": "https://up-as0.qiniup.com",      // 东南亚
+	}
+	if url, ok := regionMap[c.Region]; ok {
+		return url
+	}
+	return "https://upload.qiniup.com" // 默认华东
 }
 
 var Cfg *Config

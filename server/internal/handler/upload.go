@@ -20,9 +20,10 @@ func NewUploadHandler() *UploadHandler {
 
 // UploadTokenResponse 上传凭证响应
 type UploadTokenResponse struct {
-	Token  string `json:"token"`
-	Domain string `json:"domain"`
-	Key    string `json:"key"`
+	Token     string `json:"token"`
+	Domain    string `json:"domain"`
+	Key       string `json:"key"`
+	UploadUrl string `json:"uploadUrl"` // 七牛云上传域名
 }
 
 // GetToken 获取七牛云上传凭证
@@ -49,9 +50,10 @@ func (h *UploadHandler) GetToken(c *gin.Context) {
 	upToken := putPolicy.UploadToken(mac)
 
 	response.Success(c, UploadTokenResponse{
-		Token:  upToken,
-		Domain: cfg.Domain,
-		Key:    key,
+		Token:     upToken,
+		Domain:    cfg.Domain,
+		Key:       key,
+		UploadUrl: cfg.GetUploadURL(),
 	})
 }
 

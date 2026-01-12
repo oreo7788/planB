@@ -5,7 +5,17 @@ export interface UploadTokenResult {
   token: string
   domain: string
   key: string
+  uploadUrl?: string  // 上传域名（可选，由后端返回）
 }
+
+// 七牛云上传域名（华南区域 z2）
+// 不同区域对应不同域名：
+// 华东 z0: https://upload.qiniup.com
+// 华北 z1: https://up-z1.qiniup.com
+// 华南 z2: https://up-z2.qiniup.com
+// 北美 na0: https://up-na0.qiniup.com
+// 东南亚 as0: https://up-as0.qiniup.com
+const QINIU_UPLOAD_URL = 'https://up-z2.qiniup.com'
 
 /**
  * 获取上传凭证
@@ -19,7 +29,7 @@ export function getUploadToken(): Promise<UploadTokenResult> {
  */
 export async function uploadImage(file: File): Promise<{ url: string; thumbnailUrl: string }> {
   // 获取上传凭证
-  const { token, domain, key } = await getUploadToken()
+  const { token, domain, key, uploadUrl } = await getUploadToken()
   
   // 构建 FormData
   const formData = new FormData()
@@ -27,13 +37,16 @@ export async function uploadImage(file: File): Promise<{ url: string; thumbnailU
   formData.append('token', token)
   formData.append('key', key)
   
-  // 上传到七牛云
-  const response = await fetch('https://upload.qiniup.com', {
+  // 上传到七牛云（优先使用后端返回的上传域名）
+  const targetUrl = uploadUrl || QINIU_UPLOAD_URL
+  const response = await fetch(targetUrl, {
     method: 'POST',
     body: formData
   })
   
   if (!response.ok) {
+    const errorText = await response.text()
+    console.error('[Upload] 上传失败:', errorText)
     throw new Error('上传失败')
   }
   
@@ -41,6 +54,7 @@ export async function uploadImage(file: File): Promise<{ url: string; thumbnailU
   const url = `${domain}/${result.key}`
   const thumbnailUrl = `${url}?imageView2/1/w/300/h/300/q/80`
   
+  console.log('[Upload] 上传成功:', { url, thumbnailUrl })
   return { url, thumbnailUrl }
 }
 
