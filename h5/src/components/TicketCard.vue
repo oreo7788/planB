@@ -584,6 +584,13 @@ const handleClick = () => {
     transform: scale(0.97);
     box-shadow: var(--shadow-xs);
   }
+
+  @media (min-width: 1024px) {
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+  }
 }
 
 .ellipsis {

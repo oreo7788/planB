@@ -6,7 +6,25 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'Home',
     component: () => import('@/views/home/index.vue'),
-    meta: { title: '票迹', keepAlive: true }
+    meta: { title: '票迹', keepAlive: true, public: true }
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/auth/login.vue'),
+    meta: { title: '登录', public: true }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('@/views/auth/register.vue'),
+    meta: { title: '注册', public: true }
+  },
+  {
+    path: '/forgot',
+    name: 'Forgot',
+    component: () => import('@/views/auth/forgot.vue'),
+    meta: { title: '找回密码', public: true }
   },
   {
     path: '/add',
@@ -48,19 +66,19 @@ const routes: RouteRecordRaw[] = [
     path: '/about',
     name: 'About',
     component: () => import('@/views/about/index.vue'),
-    meta: { title: '关于我们' }
+    meta: { title: '关于我们', public: true }
   },
   {
     path: '/privacy',
     name: 'Privacy',
     component: () => import('@/views/about/privacy.vue'),
-    meta: { title: '隐私政策' }
+    meta: { title: '隐私政策', public: true }
   },
   {
     path: '/terms',
     name: 'Terms',
     component: () => import('@/views/about/terms.vue'),
-    meta: { title: '用户协议' }
+    meta: { title: '用户协议', public: true }
   }
 ]
 
@@ -85,10 +103,12 @@ router.beforeEach((to, from, next) => {
   
   // 检查登录状态
   const userStore = useUserStore()
-  if (!userStore.token && to.name !== 'Home') {
-    // 未登录且不是首页，跳转到首页
-    // 注意：小程序环境下 token 会通过 URL 传递
+  const isPublic = Boolean(to.meta.public)
+  if (!userStore.token && !isPublic) {
+    // 未登录且访问受限页面，跳转登录
     console.warn('[Router] 未登录，当前页面:', to.path)
+    next({ name: 'Login', query: { redirect: to.fullPath } })
+    return
   }
   
   next()

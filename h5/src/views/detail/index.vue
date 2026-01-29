@@ -4,7 +4,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { showToast, showConfirmDialog, showLoadingToast, showSuccessToast, closeToast, showImagePreview } from 'vant'
 import { useTicketStore } from '@/stores/ticket'
 import { TICKET_TYPE_CONFIG, PRIVACY_CONFIG } from '@/types'
-import { mpBridge } from '@/utils/bridge'
 import FlightDetail from '@/components/FlightDetail.vue'
 import TrainDetail from '@/components/TrainDetail.vue'
 import MovieDetail from '@/components/MovieDetail.vue'
@@ -95,14 +94,6 @@ const isScenicTicket = computed(() => {
 onMounted(async () => {
   try {
     await ticketStore.loadTicketDetail(ticketId.value)
-    // 更新分享信息
-    if (ticket.value) {
-      mpBridge.updateShareInfo(
-        ticket.value.name,
-        ticket.value.thumbnail || ticket.value.photo,
-        `/detail/${ticket.value.id}`
-      )
-    }
   } catch (error) {
     showToast('加载失败')
     router.back()

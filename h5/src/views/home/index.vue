@@ -154,6 +154,41 @@ const onProfile = () => {
       </div>
     </header>
 
+    <!-- Web 端主视觉 -->
+    <section class="web-hero">
+      <div class="hero-card">
+        <div class="hero-text">
+          <p class="hero-kicker">YOUR PERSONAL TIMELINE</p>
+          <h1 class="hero-title">让每一张票据，都有故事</h1>
+          <p class="hero-desc">
+            记录演出、旅行与观影，把每一次出发和抵达收藏成回忆。
+          </p>
+          <div class="hero-actions">
+            <van-button type="primary" round @click="router.push('/add')">
+              添加票迹
+            </van-button>
+            <van-button plain round @click="router.push('/mine')">
+              查看我的
+            </van-button>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="value">{{ stats.total }}</span>
+            <span class="label">收藏票据</span>
+          </div>
+          <div class="hero-stat">
+            <span class="value">{{ stats.cities }}</span>
+            <span class="label">足迹城市</span>
+          </div>
+          <div class="hero-stat">
+            <span class="value">{{ stats.year }}</span>
+            <span class="label">年度</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 分类导航栏 TopBar -->
     <nav class="category-nav">
       <div class="category-scroll">
@@ -272,6 +307,10 @@ const onProfile = () => {
 .home-page {
   padding-bottom: 100px;
   background: var(--bg-page);
+}
+
+.web-hero {
+  display: none;
 }
 
 // ============================================
@@ -645,6 +684,156 @@ const onProfile = () => {
   color: var(--slate-400);
   font-size: 12px;
   font-weight: 500;
+}
+
+// ============================================
+// Web 端优化
+// ============================================
+@media (min-width: 1024px) {
+  .home-page {
+    padding-bottom: 40px;
+    background: transparent;
+  }
+
+  .header {
+    display: none;
+  }
+
+  .web-hero {
+    display: block;
+    padding: 24px 0 8px;
+  }
+
+  .hero-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(59, 130, 246, 0.06));
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 24px;
+    padding: 32px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    box-shadow: 0 20px 40px -24px rgba(15, 23, 42, 0.2);
+  }
+
+  .hero-text {
+    max-width: 520px;
+  }
+
+  .hero-kicker {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--text-secondary);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .hero-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .hero-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    min-width: 260px;
+  }
+
+  .hero-stat {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: var(--shadow-xs);
+  }
+
+  .hero-stat .value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .hero-stat .label {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .stats-section {
+    display: none;
+  }
+
+  .category-nav {
+    position: static;
+    background: transparent;
+    border-bottom: none;
+    padding: 16px 0 8px;
+  }
+
+  .category-scroll {
+    padding: 0;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .category-item {
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius-full);
+  }
+
+  .category-icon-wrap {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full);
+  }
+
+  .category-label {
+    font-size: 13px;
+  }
+
+  .timeline-content {
+    padding: 24px 0;
+  }
+
+  .timeline-line {
+    display: none;
+  }
+
+  .month-header {
+    padding-left: 0;
+    margin-bottom: 16px;
+  }
+
+  .timeline-dot {
+    display: none;
+  }
+
+  .ticket-list {
+    padding-left: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .empty-container {
+    min-height: 420px;
+  }
 }
 
 // ============================================

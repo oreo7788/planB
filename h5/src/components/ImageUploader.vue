@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { showToast, showLoadingToast, showSuccessToast, closeToast } from 'vant'
-import { mpBridge } from '@/utils/bridge'
 
 const props = defineProps<{
   modelValue?: string
@@ -64,47 +63,33 @@ const handleUpload = async () => {
   try {
     uploading.value = true
     
-    if (mpBridge.isMiniProgram()) {
-      // 小程序环境：调用原生能力
-      showLoadingToast({ message: '处理中...', forbidClick: true })
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0]
+      if (!file) return
       
-      const result = await mpBridge.chooseImage()
-      imageUrl.value = result.url
-      emit('update:modelValue', result.url)
-      emit('upload-success', result)
-      
-      closeToast()
-      showSuccessToast('添加成功')
-    } else {
-      // 浏览器环境：使用 input，本地预览模式
-      const input = document.createElement('input')
-      input.type = 'file'
-      input.accept = 'image/*'
-      
-      input.onchange = async (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0]
-        if (!file) return
+      try {
+        showLoadingToast({ message: '处理中...', forbidClick: true })
         
-        try {
-          showLoadingToast({ message: '处理中...', forbidClick: true })
-          
-          // 压缩图片并转为 base64
-          const base64Url = await compressImage(file, 0.8)
-          
-          imageUrl.value = base64Url
-          emit('update:modelValue', base64Url)
-          emit('upload-success', { url: base64Url, thumbnailUrl: base64Url })
-          
-          closeToast()
-          showSuccessToast('添加成功')
-        } catch (error) {
-          closeToast()
-          showToast({ message: '处理失败', type: 'fail' })
-        }
+        // 压缩图片并转为 base64
+        const base64Url = await compressImage(file, 0.8)
+        
+        imageUrl.value = base64Url
+        emit('update:modelValue', base64Url)
+        emit('upload-success', { url: base64Url, thumbnailUrl: base64Url })
+        
+        closeToast()
+        showSuccessToast('添加成功')
+      } catch (error) {
+        closeToast()
+        showToast({ message: '处理失败', type: 'fail' })
       }
-      
-      input.click()
     }
+    
+    input.click()
   } catch (error: any) {
     closeToast()
     if (error.message !== 'user_cancel') {

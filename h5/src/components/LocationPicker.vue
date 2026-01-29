@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { showToast } from 'vant'
 import type { Location } from '@/types'
-import { mpBridge } from '@/utils/bridge'
 import { searchAirports, type Airport } from '@/data/airports'
 import { searchStations, type Station } from '@/data/stations'
 
@@ -139,27 +137,9 @@ const onSelectStation = (station: Station) => {
 }
 
 // 选择单一地点
-const chooseSingleLocation = async () => {
-  if (mpBridge.isMiniProgram()) {
-    try {
-      const result = await mpBridge.chooseLocation()
-      singleLocation.value = {
-        city: result.city,
-        address: result.address,
-        latitude: result.latitude,
-        longitude: result.longitude
-      }
-      emitValue()
-    } catch (error: any) {
-      if (error.message !== 'user_cancel') {
-        showToast('选择位置失败')
-      }
-    }
-  } else {
-    // 浏览器环境：手动输入
-    tempCity.value = singleLocation.value.city
-    showCityInput.value = true
-  }
+const chooseSingleLocation = () => {
+  tempCity.value = singleLocation.value.city
+  showCityInput.value = true
 }
 
 // 确认城市输入
@@ -183,27 +163,9 @@ const chooseDeparture = async () => {
     return
   }
   
-  if (mpBridge.isMiniProgram()) {
-    try {
-      const result = await mpBridge.chooseLocation()
-      routeLocation.value.departure = {
-        ...routeLocation.value.departure,
-        city: result.city,
-        station: result.address,
-        latitude: result.latitude,
-        longitude: result.longitude
-      }
-      emitValue()
-    } catch (error: any) {
-      if (error.message !== 'user_cancel') {
-        showToast('选择位置失败')
-      }
-    }
-  } else {
-    tempCity.value = routeLocation.value.departure.city
-    tempCode.value = routeLocation.value.departure.code
-    showDepartureInput.value = true
-  }
+  tempCity.value = routeLocation.value.departure.city
+  tempCode.value = routeLocation.value.departure.code
+  showDepartureInput.value = true
 }
 
 const confirmDepartureInput = () => {
@@ -227,27 +189,9 @@ const chooseArrival = async () => {
     return
   }
   
-  if (mpBridge.isMiniProgram()) {
-    try {
-      const result = await mpBridge.chooseLocation()
-      routeLocation.value.arrival = {
-        ...routeLocation.value.arrival,
-        city: result.city,
-        station: result.address,
-        latitude: result.latitude,
-        longitude: result.longitude
-      }
-      emitValue()
-    } catch (error: any) {
-      if (error.message !== 'user_cancel') {
-        showToast('选择位置失败')
-      }
-    }
-  } else {
-    tempCity.value = routeLocation.value.arrival.city
-    tempCode.value = routeLocation.value.arrival.code
-    showArrivalInput.value = true
-  }
+  tempCity.value = routeLocation.value.arrival.city
+  tempCode.value = routeLocation.value.arrival.code
+  showArrivalInput.value = true
 }
 
 const confirmArrivalInput = () => {

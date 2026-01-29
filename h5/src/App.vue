@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
-import { mpBridge } from '@/utils/bridge'
 
 const userStore = useUserStore()
 
@@ -16,17 +15,23 @@ onMounted(async () => {
     await userStore.fetchUserInfo()
   }
   
-  // 检测运行环境
-  if (mpBridge.isMiniProgram()) {
-    console.log('[App] 运行在小程序环境')
-  } else {
-    console.log('[App] 运行在浏览器环境')
-  }
+  console.log('[App] 运行在浏览器环境')
 })
 </script>
 
 <template>
   <div class="app-container">
+    <header class="web-header">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-title">票迹</span>
+      </div>
+      <nav class="web-nav">
+        <router-link to="/" class="nav-item">首页</router-link>
+        <router-link to="/add" class="nav-item">添加票迹</router-link>
+        <router-link to="/mine" class="nav-item">我的</router-link>
+      </nav>
+    </header>
     <router-view v-slot="{ Component }">
       <keep-alive :include="['Home']">
         <component :is="Component" />
@@ -65,10 +70,78 @@ onMounted(async () => {
   position: relative;
   
   // 桌面端显示边框阴影
-  @media (min-width: 431px) {
-    box-shadow: 
-      0 0 0 1px var(--border-color),
-      0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  @media (min-width: 1024px) {
+    max-width: 1200px;
+    padding: 0 24px 40px;
+    box-shadow: none;
+  }
+}
+
+// ============================================
+// Web 顶部导航
+// ============================================
+.web-header {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 12px;
+  margin: 0 0 12px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(248, 250, 252, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+}
+
+.brand-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.web-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-item {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--duration-normal) var(--ease-out);
+
+  &.router-link-active {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  &:hover {
+    color: var(--primary-dark);
+  }
+}
+
+@media (min-width: 1024px) {
+  .web-header {
+    display: flex;
   }
 }
 

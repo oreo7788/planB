@@ -3,11 +3,13 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { showToast } from 'vant'
 import { useUserStore } from '@/stores/user'
-import { mpBridge } from '@/utils/bridge'
 import TabBar from '@/components/TabBar.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
+
+// 登录状态
+const isLoggedIn = computed(() => userStore.isLoggedIn)
 
 // 用户信息
 const userInfo = computed(() => userStore.userInfo)
@@ -41,38 +43,31 @@ const onMenuClick = (item: any) => {
   }
 }
 
-// 绑定手机号
-const onBindPhone = async () => {
-  if (userInfo.value?.phone) {
-    showToast('已绑定手机号')
-    return
-  }
-  
-  try {
-    await mpBridge.bindPhone()
-    // 刷新用户信息
-    await userStore.fetchUserInfo()
-    showToast('绑定成功')
-  } catch (error: any) {
-    if (error.message !== 'user_cancel') {
-      showToast('绑定失败')
-    }
-  }
-}
-
 // 退出登录
 const onLogout = () => {
   userStore.clearToken()
   showToast('已退出登录')
-  // 返回小程序首页重新登录
-  mpBridge.navigateBack()
+  router.replace('/login')
 }
 </script>
 
 <template>
   <div class="page-container mine-page">
+    <!-- 未登录状态 -->
+    <div v-if="!isLoggedIn" class="user-card login-card">
+      <div class="login-info">
+        <div class="login-text">
+          <h2 class="login-title">登录你的票迹</h2>
+          <p class="login-desc">同步保存票据与个人足迹</p>
+        </div>
+        <van-button type="primary" round size="small" @click="router.push('/login')">
+          去登录
+        </van-button>
+      </div>
+    </div>
+
     <!-- 用户信息卡片 -->
-    <div class="user-card">
+    <div v-else class="user-card">
       <div class="user-info">
         <van-image
           round
@@ -110,13 +105,11 @@ const onLogout = () => {
       </div>
     </div>
 
-    <!-- 手机号绑定 -->
-    <van-cell-group inset class="phone-section">
+    <!-- 账号信息 -->
+    <van-cell-group v-if="isLoggedIn" inset class="phone-section">
       <van-cell
         title="手机号"
         :value="userInfo?.phone || '未绑定'"
-        is-link
-        @click="onBindPhone"
       >
         <template #icon>
           <van-icon name="phone-o" class="cell-icon" />
@@ -143,7 +136,7 @@ const onLogout = () => {
     </van-cell-group>
 
     <!-- 退出登录 -->
-    <div class="logout-section">
+    <div v-if="isLoggedIn" class="logout-section">
       <van-button block plain type="default" @click="onLogout">
         退出登录
       </van-button>
@@ -165,6 +158,35 @@ const onLogout = () => {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
+}
+
+.login-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.login-text {
+  .login-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .login-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+  }
 }
 
 .user-info {

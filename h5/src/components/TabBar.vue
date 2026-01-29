@@ -252,4 +252,10 @@ const onAdd = () => {
     font-size: 28px;
   }
 }
+
+@media (min-width: 1024px) {
+  .tabbar-wrapper {
+    display: none;
+  }
+}
 </style>
